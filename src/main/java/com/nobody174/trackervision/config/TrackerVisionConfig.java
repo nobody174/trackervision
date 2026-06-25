@@ -27,6 +27,8 @@ public final class TrackerVisionConfig {
     private static float farDistance = 64.0F;
     private static int bracketBaseSize = 24;
     private static int trackingAccentColor = 0xFF35E0E0;
+    private static boolean beaconEnabled = true;
+    private static float beaconDistance = 48.0F;
 
     private TrackerVisionConfig() {
     }
@@ -69,6 +71,23 @@ public final class TrackerVisionConfig {
 
     public static void setTrackingAccentColor(int value) {
         trackingAccentColor = 0xFF000000 | (value & 0x00FFFFFF);
+    }
+
+    public static boolean isBeaconEnabled() {
+        return beaconEnabled;
+    }
+
+    public static void setBeaconEnabled(boolean value) {
+        beaconEnabled = value;
+    }
+
+    /** Distance beyond which the beacon pillar replaces the shrunk reticle. See docs/UI_STYLE_GUIDE.md. */
+    public static float getBeaconDistance() {
+        return beaconDistance;
+    }
+
+    public static void setBeaconDistance(float value) {
+        beaconDistance = Math.max(MIN_FAR_DISTANCE, Math.min(MAX_FAR_DISTANCE, value));
     }
 }
 

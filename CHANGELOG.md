@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- `TrackerHudOverlay` beacon mode: beyond
+  `TrackerVisionConfig.getBeaconDistance()`, the bracket reticle is
+  replaced by a vertical accent pillar from the target's screen-space
+  base (per docs/UI_STYLE_GUIDE.md's Beacon Pillar Marker spec) — a thin
+  alpha-gradient line capped with a chevron, since a heavily
+  distance-shrunk bracket becomes hard to spot at range. Toggleable via
+  `/track config beaconEnabled|beaconDistance` and the config screen.
+
 ## [0.5.0-RC1] - Unreleased
 
 ### Added

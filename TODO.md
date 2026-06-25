@@ -1,6 +1,13 @@
 # TODO
 
-## v0.5 Beta (in progress)
+## v1.0 Release (in progress)
+- [x] Beacon mode (`TrackerHudOverlay.drawBeacon`, vertical accent pillar
+      replacing the bracket reticle beyond `beaconDistance`)
+- [ ] Search mode (area scan/reveal)
+- [ ] Multiple tracking profiles
+- [ ] Shader pipeline for advanced visual effects
+
+## v0.5 Beta (feature-complete, RC1 tagged)
 - [x] JSON config system (`TrackerVisionConfig`/`TrackerVisionConfigFile`)
       with `/track config` commands
 - [x] Tracking modes (`TrackingMode.LOCKED`/`NEAREST`, `/track mode`,

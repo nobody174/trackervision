@@ -75,6 +75,12 @@ public final class TrackerVisionConfigFile {
                     LOGGER.warn("Invalid trackingAccentColor in config, keeping default", e);
                 }
             }
+            if (config.has("beaconEnabled")) {
+                TrackerVisionConfig.setBeaconEnabled(config.get("beaconEnabled").getAsBoolean());
+            }
+            if (config.has("beaconDistance")) {
+                TrackerVisionConfig.setBeaconDistance(config.get("beaconDistance").getAsFloat());
+            }
         } catch (IOException e) {
             LOGGER.error("Failed to load config, keeping defaults", e);
         }
@@ -90,6 +96,8 @@ public final class TrackerVisionConfigFile {
             config.addProperty("bracketBaseSize", TrackerVisionConfig.getBracketBaseSize());
             config.addProperty("trackingAccentColor",
                 String.format("%06X", TrackerVisionConfig.getTrackingAccentColor() & 0x00FFFFFF));
+            config.addProperty("beaconEnabled", TrackerVisionConfig.isBeaconEnabled());
+            config.addProperty("beaconDistance", TrackerVisionConfig.getBeaconDistance());
             GSON.toJson(config, writer);
         } catch (IOException e) {
             LOGGER.error("Failed to save config", e);

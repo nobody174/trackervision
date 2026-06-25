@@ -42,6 +42,12 @@ public final class TrackConfigCommand {
             .then(Commands.literal("farDistance")
                 .then(Commands.argument("value", FloatArgumentType.floatArg(8.0F, 256.0F))
                     .executes(TrackConfigCommand::setFarDistance)))
+            .then(Commands.literal("beaconEnabled")
+                .then(Commands.argument("value", BoolArgumentType.bool())
+                    .executes(TrackConfigCommand::setBeaconEnabled)))
+            .then(Commands.literal("beaconDistance")
+                .then(Commands.argument("value", FloatArgumentType.floatArg(8.0F, 256.0F))
+                    .executes(TrackConfigCommand::setBeaconDistance)))
             .then(Commands.literal("show")
                 .executes(TrackConfigCommand::show));
     }
@@ -73,13 +79,34 @@ public final class TrackConfigCommand {
         return 1;
     }
 
+    private static int setBeaconEnabled(CommandContext<CommandSourceStack> ctx) {
+        boolean value = BoolArgumentType.getBool(ctx, "value");
+        TrackerVisionConfig.setBeaconEnabled(value);
+        TrackerVisionConfigFile.save();
+        final Component message = Component.literal("Beacon mode enabled: " + value);
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+
+    private static int setBeaconDistance(CommandContext<CommandSourceStack> ctx) {
+        float value = FloatArgumentType.getFloat(ctx, "value");
+        TrackerVisionConfig.setBeaconDistance(value);
+        TrackerVisionConfigFile.save();
+        final Component message = Component.literal("Beacon distance set to " + TrackerVisionConfig.getBeaconDistance());
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+
     private static int show(CommandContext<CommandSourceStack> ctx) {
         String summary = String.format(
-            "TrackerVision config: enabled=%s, nearDistance=%.1f, farDistance=%.1f, bracketSize=%d",
+            "TrackerVision config: enabled=%s, nearDistance=%.1f, farDistance=%.1f, bracketSize=%d, "
+                + "beaconEnabled=%s, beaconDistance=%.1f",
             TrackerVisionConfig.isTrackingEnabled(),
             TrackerVisionConfig.getNearDistance(),
             TrackerVisionConfig.getFarDistance(),
-            TrackerVisionConfig.getBracketBaseSize());
+            TrackerVisionConfig.getBracketBaseSize(),
+            TrackerVisionConfig.isBeaconEnabled(),
+            TrackerVisionConfig.getBeaconDistance());
         final Component message = Component.literal(summary);
         ctx.getSource().sendSuccess(() -> message, false);
         return 1;

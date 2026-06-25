@@ -46,6 +46,15 @@ brackets + depth-based color/alpha falloff, modern tactical-overlay
 language) — not a port of boss-radar's ring-indicator HUD, which doesn't
 match this mod's visual bar.
 
+Beyond `TrackerVisionConfig.getBeaconDistance()`, the bracket reticle is
+replaced by a beacon pillar (`drawBeacon`): a vertical accent line from
+the target's projected screen-space base, alpha-gradient fading
+top-to-bottom, capped with a chevron — per the style guide's Beacon
+Pillar Marker spec. The bracket alone becomes hard to spot once
+distance-based scale falloff has shrunk it down, which is exactly the
+range where a beacon's "locate extremely distant targets" purpose
+applies.
+
 ### Command Layer (`client/command/`)
 Client-only commands registered via `Commands`/`RegisterClientCommandsEvent`
 (the dispatcher uses the regular `CommandSourceStack`, not a separate

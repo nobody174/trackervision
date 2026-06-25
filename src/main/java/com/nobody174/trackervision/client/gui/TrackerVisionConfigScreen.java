@@ -65,6 +65,16 @@ public final class TrackerVisionConfigScreen extends Screen {
             "Bracket size", TrackerVisionConfig.getBracketBaseSize(), 8.0F, 64.0F,
             value -> TrackerVisionConfig.setBracketBaseSize(Math.round(value))));
 
+        rows.addChild(
+            Checkbox.builder(Component.literal("Beacon mode for distant targets"), font)
+                .selected(TrackerVisionConfig.isBeaconEnabled())
+                .onValueChange((checkbox, value) -> TrackerVisionConfig.setBeaconEnabled(value))
+                .build());
+
+        rows.addChild(new DistanceSlider(
+            "Beacon distance", TrackerVisionConfig.getBeaconDistance(), 8.0F, 256.0F,
+            TrackerVisionConfig::setBeaconDistance));
+
         grid.arrangeElements();
         grid.visitWidgets(this::addRenderableWidget);
         grid.setPosition((width - grid.getWidth()) / 2, 40);

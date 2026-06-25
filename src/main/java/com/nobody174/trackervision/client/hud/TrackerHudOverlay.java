@@ -51,6 +51,9 @@ public final class TrackerHudOverlay {
     private static final int TEXT_COLOR_NEUTRAL = 0xFFE8EEF2;
     private static final int TEXT_OUTLINE = 0xC0000000;
 
+    private static final int BEACON_HEIGHT = 40;
+    private static final int BEACON_STROKE = 2;
+
     private TrackerHudOverlay() {
     }
 
@@ -90,7 +93,15 @@ public final class TrackerHudOverlay {
         ScreenProjection.Result projection = ScreenProjection.project(targetPos);
         GuiGraphics graphics = event.getGuiGraphics();
 
-        if (projection.isOnScreen()) {
+        boolean useBeacon = TrackerVisionConfig.isBeaconEnabled()
+            && distance > TrackerVisionConfig.getBeaconDistance()
+            && projection.isOnScreen();
+
+        if (useBeacon) {
+            ScreenProjection.Result baseProjection = ScreenProjection.project(target.getPosition(partialTick));
+            drawBeacon(graphics, baseProjection.screenX(), baseProjection.screenY(), accentColor, alpha);
+            drawDistanceText(graphics, baseProjection.screenX(), baseProjection.screenY() - BEACON_HEIGHT, distance, alpha);
+        } else if (projection.isOnScreen()) {
             drawReticle(graphics, projection.screenX(), projection.screenY(), accentColor, alpha, scale);
             drawDistanceText(graphics, projection.screenX(), projection.screenY(), distance, alpha);
         } else {
@@ -134,6 +145,31 @@ public final class TrackerHudOverlay {
         // Bottom-right
         graphics.fill((int) (right - corner), (int) bottom - stroke, (int) right, (int) bottom, color);
         graphics.fill((int) right - stroke, (int) (bottom - corner), (int) right, (int) bottom, color);
+    }
+
+    /**
+     * Vertical accent pillar for far-away targets (beyond
+     * {@code TrackerVisionConfig.getBeaconDistance()}), per
+     * docs/UI_STYLE_GUIDE.md's "Beacon Pillar Marker": a thin line from the
+     * target's screen-space base extending upward, fading top-to-bottom
+     * (brightest near the target, so it still reads as anchored to them),
+     * capped with a small chevron. Replaces the bracket reticle at this
+     * range since a heavily shrunk-down bracket is hard to spot — the
+     * beacon's whole purpose is locating targets the reticle can't
+     * usefully represent anymore.
+     */
+    private static void drawBeacon(GuiGraphics graphics, float baseX, float baseY, int accentColor, float alpha) {
+        int half = BEACON_STROKE / 2;
+        for (int i = 0; i < BEACON_HEIGHT; i++) {
+            float segmentAlpha = alpha * (1.0F - (float) i / BEACON_HEIGHT);
+            int color = withAlpha(accentColor, segmentAlpha);
+            int y = (int) baseY - i;
+            graphics.fill((int) baseX - half, y, (int) baseX - half + BEACON_STROKE, y + 1, color);
+        }
+
+        int chevronColor = withAlpha(accentColor, alpha);
+        int tipY = (int) baseY - BEACON_HEIGHT;
+        drawCaret(graphics, baseX, tipY, -(float) (Math.PI / 2.0), chevronColor);
     }
 
     private static void drawDistanceText(GuiGraphics graphics, float centerX, float centerY, float distance, float alpha) {
