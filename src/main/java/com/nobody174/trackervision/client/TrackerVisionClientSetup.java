@@ -13,6 +13,8 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 import com.nobody174.trackervision.client.command.TrackCommand;
+import com.nobody174.trackervision.client.hud.TrackerHudOverlay;
+import com.nobody174.trackervision.client.render.TrackedTargetGlowRenderer;
 
 public final class TrackerVisionClientSetup {
     private TrackerVisionClientSetup() {
@@ -20,6 +22,8 @@ public final class TrackerVisionClientSetup {
 
     public static void init(IEventBus modEventBus) {
         NeoForge.EVENT_BUS.addListener(TrackerVisionClientSetup::registerCommands);
+        TrackedTargetGlowRenderer.register(modEventBus);
+        TrackerHudOverlay.register(modEventBus);
     }
 
     private static void registerCommands(final RegisterClientCommandsEvent event) {

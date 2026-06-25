@@ -15,6 +15,11 @@ import net.minecraft.world.entity.Entity;
 /**
  * Client-side store for the currently locked target. v0.1 supports a single
  * locked entity; multi-target tracking is planned for a later milestone.
+ *
+ * <p>v0.1 always reports {@link TargetState#TRACKING}; hostility- and
+ * range-based state (see {@link TargetState}) is wired up once Tracking
+ * Modes (Nearest/Group/Filtered) land per
+ * {@code TrackerVision_Production_Design_Package_v2/05_TRACKING_ENGINE.md}.</p>
  */
 public final class TrackedTargetManager {
     private static UUID lockedTargetId;
@@ -36,6 +41,10 @@ public final class TrackedTargetManager {
 
     public static UUID getLockedTargetId() {
         return lockedTargetId;
+    }
+
+    public static TargetState getCurrentState() {
+        return TargetState.TRACKING;
     }
 }
 
