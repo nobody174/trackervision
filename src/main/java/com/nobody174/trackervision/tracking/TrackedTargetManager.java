@@ -31,22 +31,38 @@ import com.nobody174.trackervision.config.TrackerVisionConfig;
 public final class TrackedTargetManager {
     private static UUID lockedTargetId;
     private static TrackingMode mode = TrackingMode.LOCKED;
+    private static long acquiredAtNanos;
 
     private TrackedTargetManager() {
     }
 
     public static void lock(Entity entity) {
-        lockedTargetId = entity.getUUID();
+        setTargetId(entity.getUUID());
         mode = TrackingMode.LOCKED;
     }
 
     /** Called by the Nearest-mode scanner; does not change {@link #mode}. */
     public static void setAutoSelectedTarget(UUID entityId) {
-        lockedTargetId = entityId;
+        setTargetId(entityId);
+    }
+
+    private static void setTargetId(UUID newTargetId) {
+        if (newTargetId != null && !newTargetId.equals(lockedTargetId)) {
+            acquiredAtNanos = System.nanoTime();
+        }
+        lockedTargetId = newTargetId;
     }
 
     public static void clear() {
         lockedTargetId = null;
+    }
+
+    /**
+     * Nanoseconds since the current target was (re-)acquired, for the
+     * lock-acquired pulse animation. See docs/UI_STYLE_GUIDE.md.
+     */
+    public static long getAcquiredAgeNanos() {
+        return System.nanoTime() - acquiredAtNanos;
     }
 
     public static void setMode(TrackingMode newMode) {

@@ -31,3 +31,6 @@
   (`TrackedTargetManager.computeState`) instead of always reporting
   `TRACKING`: hostile mobs (`instanceof Enemy`) render red, targets
   beyond the configured far-distance render amber, otherwise cyan.
+- Reticle motion: a damped-spring scale pulse on target acquisition
+  (settles within ~1.5s) and a continuous subtle breathing scale, both
+  driven off `System.nanoTime()` per docs/UI_STYLE_GUIDE.md.

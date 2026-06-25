@@ -7,7 +7,7 @@
       `NearestTargetScanner`)
 - [x] Hostile/out-of-range target-state color differentiation
       (`TrackedTargetManager.computeState`)
-- [ ] Breathing reticle + lock-acquired pulse motion
+- [x] Breathing reticle + lock-acquired pulse motion
 - [ ] Through-wall silhouette rendering
 - [ ] In-game config screen (replacing commands per command spec)
 

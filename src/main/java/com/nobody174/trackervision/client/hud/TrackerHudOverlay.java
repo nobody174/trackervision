@@ -85,7 +85,7 @@ public final class TrackerHudOverlay {
         float t = Mth.clamp((distance - nearDistance) / (farDistance - nearDistance), 0.0F, 1.0F);
         float s = t * t * (3.0F - 2.0F * t);
         float alpha = Mth.lerp(s, 1.0F, MIN_ALPHA);
-        float scale = Mth.lerp(s, 1.0F, MIN_SCALE);
+        float scale = Mth.lerp(s, 1.0F, MIN_SCALE) * lockPulseScale() * breathingScale();
 
         ScreenProjection.Result projection = ScreenProjection.project(targetPos);
         GuiGraphics graphics = event.getGuiGraphics();
@@ -212,6 +212,25 @@ public final class TrackerHudOverlay {
     private static int withAlpha(int rgb, float alpha) {
         int a = Mth.clamp(Math.round(alpha * 255), 0, 255);
         return (a << 24) | (rgb & 0x00FFFFFF);
+    }
+
+    /**
+     * Damped-spring scale pulse on target acquisition, settling to 1.0
+     * within roughly a second. See docs/UI_STYLE_GUIDE.md "Lock-acquired
+     * pulse".
+     */
+    private static float lockPulseScale() {
+        float ageSeconds = TrackedTargetManager.getAcquiredAgeNanos() / 1.0e9F;
+        if (ageSeconds > 1.5F) {
+            return 1.0F;
+        }
+        return 1.0F + 0.25F * (float) (Math.exp(-ageSeconds * 8.0) * Math.sin(ageSeconds * 40.0));
+    }
+
+    /** Continuous subtle breathing on the reticle, independent of game state. */
+    private static float breathingScale() {
+        double nowSeconds = System.nanoTime() / 1.0e9;
+        return 0.97F + 0.03F * (float) Math.sin(nowSeconds * 2.5);
     }
 }
 
