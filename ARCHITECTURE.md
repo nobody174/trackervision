@@ -13,12 +13,13 @@ single locked entity per client; multi-target tracking is a future
 expansion.
 
 ### Visualization Layer (`client/render/`)
-Applies the vanilla glowing/outline-buffer mechanism (`Entity.setGlowingTag`
-+ `OutlineBufferSource`, the same system behind spectator-mode glow) to the
-locked target for a crisp 1px silhouette, tinted by current target state.
-This is supporting cast, not the primary visual identity — see
-`docs/RENDERING_RESEARCH.md` for why a custom-shader approach was
-researched and deliberately deferred to v1.0.
+`TrackedTargetGlowRenderer` draws a thin single-pass additive rim on the
+locked target, hooked off `RenderLivingEvent.Post` (works for any
+`LivingEntity` type without per-renderer registration — `Entity.setGlowingTag`
+was investigated but rejected: it's server-synced and gets overwritten,
+so it can't carry client-only tracking state; see `docs/RENDERING_RESEARCH.md`).
+This is supporting cast, not the primary visual identity — a custom-shader
+outline approach was researched and deliberately deferred to v1.0.
 
 ### HUD Layer (`client/hud/`)
 This is where TrackerVision's actual visual identity lives: screen-space
@@ -30,15 +31,28 @@ language) — not a port of boss-radar's ring-indicator HUD, which doesn't
 match this mod's visual bar.
 
 ### Command Layer (`client/command/`)
-Client-only commands registered via `ClientCommandManager` /
-`RegisterClientCommandsEvent`:
+Client-only commands registered via `Commands`/`RegisterClientCommandsEvent`
+(the dispatcher uses the regular `CommandSourceStack`, not a separate
+client-only command-source type — confirmed by reading armor-aura's actual
+working implementation rather than assuming a `ClientCommandManager` API
+that doesn't exist in 1.21.1):
 - `/track lock <target>`
 - `/track clear`
 - `/track status`
+- `/track config enabled <true|false>`
+- `/track config nearDistance <value>`
+- `/track config farDistance <value>`
+- `/track config show`
 
 ### Configuration Layer (`config/`)
-Future GUI and profiles (v0.5+). JSON-backed config following the
-armor-aura `AuraConfigFile`/`AuraConfig` pattern.
+`TrackerVisionConfig` (in-memory, clamped on write) +
+`TrackerVisionConfigFile` (JSON persistence at
+`config/trackervision/trackervision-config.json`), following the armor-aura
+`AuraConfig`/`AuraConfigFile` pattern. Loaded on `FMLClientSetupEvent`,
+saved immediately on any `/track config` change. An in-game config screen
+(replacing the commands per
+`TrackerVision_Production_Design_Package_v2/08_COMMAND_SPEC.md`) is v0.5+
+scope; commands are the interim v0.1/v0.5 interface.
 
 ## Package Layout
 

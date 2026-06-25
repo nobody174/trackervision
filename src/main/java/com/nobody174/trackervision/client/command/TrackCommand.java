@@ -33,7 +33,8 @@ public final class TrackCommand {
             .then(Commands.literal("clear")
                 .executes(TrackCommand::clearTarget))
             .then(Commands.literal("status")
-                .executes(TrackCommand::status)));
+                .executes(TrackCommand::status))
+            .then(TrackConfigCommand.build()));
     }
 
     private static int lockTarget(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

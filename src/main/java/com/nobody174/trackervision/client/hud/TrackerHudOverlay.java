@@ -25,6 +25,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import org.joml.Matrix4f;
 
+import com.nobody174.trackervision.config.TrackerVisionConfig;
 import com.nobody174.trackervision.tracking.TargetState;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
 
@@ -38,12 +39,9 @@ import com.nobody174.trackervision.tracking.TrackedTargetManager;
  */
 public final class TrackerHudOverlay {
 
-    private static final int BRACKET_BASE_SIZE = 24;
     private static final int BRACKET_CORNER_LENGTH = 7;
     private static final int BRACKET_STROKE = 2;
 
-    private static final float NEAR_DISTANCE = 8.0F;
-    private static final float FAR_DISTANCE = 64.0F;
     private static final float MIN_ALPHA = 0.2F;
     private static final float MIN_SCALE = 0.7F;
 
@@ -62,7 +60,8 @@ public final class TrackerHudOverlay {
 
     private static void onRenderGuiPost(RenderGuiEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null || !TrackedTargetManager.isLocked()) {
+        if (mc.level == null || mc.player == null || !TrackedTargetManager.isLocked()
+            || !TrackerVisionConfig.isTrackingEnabled()) {
             return;
         }
 
@@ -77,9 +76,13 @@ public final class TrackerHudOverlay {
         float distance = (float) mc.player.position().distanceTo(targetPos);
 
         TargetState state = TrackedTargetManager.getCurrentState();
-        int accentColor = state.colorRgb();
+        int accentColor = state == TargetState.TRACKING
+            ? TrackerVisionConfig.getTrackingAccentColor()
+            : state.colorRgb();
 
-        float t = Mth.clamp((distance - NEAR_DISTANCE) / (FAR_DISTANCE - NEAR_DISTANCE), 0.0F, 1.0F);
+        float nearDistance = TrackerVisionConfig.getNearDistance();
+        float farDistance = TrackerVisionConfig.getFarDistance();
+        float t = Mth.clamp((distance - nearDistance) / (farDistance - nearDistance), 0.0F, 1.0F);
         float s = t * t * (3.0F - 2.0F * t);
         float alpha = Mth.lerp(s, 1.0F, MIN_ALPHA);
         float scale = Mth.lerp(s, 1.0F, MIN_SCALE);
@@ -110,7 +113,7 @@ public final class TrackerHudOverlay {
 
     private static void drawReticle(GuiGraphics graphics, float centerX, float centerY, int accentColor, float alpha, float scale) {
         int color = withAlpha(accentColor, alpha);
-        float half = (BRACKET_BASE_SIZE * scale) / 2.0F;
+        float half = (TrackerVisionConfig.getBracketBaseSize() * scale) / 2.0F;
         float corner = BRACKET_CORNER_LENGTH * scale;
         int stroke = Math.max(1, Math.round(BRACKET_STROKE * scale));
 
@@ -139,7 +142,7 @@ public final class TrackerHudOverlay {
         int color = withAlpha(TEXT_COLOR_NEUTRAL, alpha);
         int textWidth = mc.font.width(text);
         int x = Math.round(centerX) - textWidth / 2;
-        int y = Math.round(centerY) + BRACKET_BASE_SIZE / 2 + 4;
+        int y = Math.round(centerY) + TrackerVisionConfig.getBracketBaseSize() / 2 + 4;
         drawOutlinedString(graphics, text, x, y, color, withAlpha(TEXT_OUTLINE, alpha));
     }
 

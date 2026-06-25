@@ -18,6 +18,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import com.nobody174.trackervision.client.TrackerVisionClientSetup;
+import com.nobody174.trackervision.config.TrackerVisionConfigFile;
 
 @Mod(TrackerVisionMod.MOD_ID)
 public class TrackerVisionMod {
@@ -37,6 +38,9 @@ public class TrackerVisionMod {
     }
 
     private void clientSetup(final FMLClientSetupEvent event) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            event.enqueueWork(TrackerVisionConfigFile::load);
+        }
     }
 
     private void registerPackets(final RegisterPayloadHandlersEvent event) {

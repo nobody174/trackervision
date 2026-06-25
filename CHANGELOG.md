@@ -18,3 +18,8 @@
   matrices for 2D HUD drawing).
 - `docs/RENDERING_RESEARCH.md` and `docs/UI_STYLE_GUIDE.md`: researched
   visual-design decisions behind the above.
+- `TrackerVisionConfig`/`TrackerVisionConfigFile`: JSON-backed client
+  config (tracking enabled toggle, near/far distance thresholds, bracket
+  size, accent color) at `config/trackervision/trackervision-config.json`.
+- `/track config enabled|nearDistance|farDistance|show` commands for
+  runtime config adjustment, persisted immediately on change.

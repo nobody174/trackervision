@@ -1,5 +1,14 @@
 # TODO
 
+## v0.5 Beta (in progress)
+- [x] JSON config system (`TrackerVisionConfig`/`TrackerVisionConfigFile`)
+      with `/track config` commands
+- [ ] Tracking modes (Nearest auto-select alongside manual Locked)
+- [ ] Hostile/passive target-state color differentiation
+- [ ] Breathing reticle + lock-acquired pulse motion
+- [ ] Through-wall silhouette rendering
+- [ ] In-game config screen (replacing commands per command spec)
+
 ## v0.1 MVP
 - [x] Project scaffold (gradle, mod metadata, package structure)
 - [x] `/track lock|clear|status` client commands
