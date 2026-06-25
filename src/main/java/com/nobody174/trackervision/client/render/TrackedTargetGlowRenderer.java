@@ -13,6 +13,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
@@ -28,6 +29,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.nobody174.trackervision.tracking.TargetState;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
 
 /**
@@ -61,7 +63,10 @@ public final class TrackedTargetGlowRenderer {
             return;
         }
 
-        int rgb = TrackedTargetManager.getCurrentState().colorRgb();
+        var player = Minecraft.getInstance().player;
+        float distance = player != null ? (float) player.position().distanceTo(entity.position()) : 0.0F;
+        TargetState state = TrackedTargetManager.computeState(entity, distance);
+        int rgb = state.colorRgb();
         int red = (rgb >> 16) & 0xFF;
         int green = (rgb >> 8) & 0xFF;
         int blue = rgb & 0xFF;

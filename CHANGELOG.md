@@ -23,3 +23,11 @@
   size, accent color) at `config/trackervision/trackervision-config.json`.
 - `/track config enabled|nearDistance|farDistance|show` commands for
   runtime config adjustment, persisted immediately on change.
+- `TrackingMode` (`LOCKED`/`NEAREST`) and `/track mode locked|nearest`.
+  `NearestTargetScanner` auto-selects the closest living entity within
+  the configured far-distance every 10 client ticks (client-side only,
+  unlike boss-radar's server-side item-tick scan).
+- `TargetState` is now computed live from the tracked entity + distance
+  (`TrackedTargetManager.computeState`) instead of always reporting
+  `TRACKING`: hostile mobs (`instanceof Enemy`) render red, targets
+  beyond the configured far-distance render amber, otherwise cyan.

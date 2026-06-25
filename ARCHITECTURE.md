@@ -3,14 +3,21 @@
 ## Systems
 
 ### Detection Layer (`tracking/`)
-Discovers candidate entities (distance/type filtering). v0.1 scope is
-command-driven selection only; automatic scanning arrives with Search Mode
-(v1.0).
+`NearestTargetScanner` discovers candidate entities for
+`TrackingMode.NEAREST`: every 10 client ticks, scans `LivingEntity`s within
+the configured far-distance radius (`level.getEntitiesOfClass` + an AABB,
+the same pattern boss-radar uses, but client-tick-driven rather than a
+server-side item tick, since this state never needs to leave the client).
+Area scan/reveal (Search Mode) is v1.0 scope.
 
 ### Tracking Layer (`tracking/`)
-`TrackedTargetManager` stores the currently locked target. v0.1 supports a
-single locked entity per client; multi-target tracking is a future
-expansion.
+`TrackedTargetManager` stores the currently tracked target and its
+`TrackingMode` (`LOCKED` — manual via `/track lock`, or `NEAREST` — auto-
+selected by the Detection Layer above). `TargetState` (tracking/hostile/
+out-of-range) is computed per-frame from the live entity + distance via
+`computeState(Entity, float)`, not cached, since it depends on context
+only the HUD/glow layers have at render time. v0.5 supports a single
+tracked entity at a time; `GROUP`/`FILTERED` modes are v1.0 scope.
 
 ### Visualization Layer (`client/render/`)
 `TrackedTargetGlowRenderer` draws a thin single-pass additive rim on the
@@ -39,6 +46,7 @@ that doesn't exist in 1.21.1):
 - `/track lock <target>`
 - `/track clear`
 - `/track status`
+- `/track mode locked|nearest`
 - `/track config enabled <true|false>`
 - `/track config nearDistance <value>`
 - `/track config farDistance <value>`

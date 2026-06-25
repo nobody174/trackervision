@@ -75,7 +75,7 @@ public final class TrackerHudOverlay {
         Vec3 targetPos = target.getPosition(partialTick).add(0, target.getBbHeight() * 0.5, 0);
         float distance = (float) mc.player.position().distanceTo(targetPos);
 
-        TargetState state = TrackedTargetManager.getCurrentState();
+        TargetState state = TrackedTargetManager.computeState(target, distance);
         int accentColor = state == TargetState.TRACKING
             ? TrackerVisionConfig.getTrackingAccentColor()
             : state.colorRgb();

@@ -15,6 +15,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import com.nobody174.trackervision.client.command.TrackCommand;
 import com.nobody174.trackervision.client.hud.TrackerHudOverlay;
 import com.nobody174.trackervision.client.render.TrackedTargetGlowRenderer;
+import com.nobody174.trackervision.tracking.NearestTargetScanner;
 
 public final class TrackerVisionClientSetup {
     private TrackerVisionClientSetup() {
@@ -24,6 +25,7 @@ public final class TrackerVisionClientSetup {
         NeoForge.EVENT_BUS.addListener(TrackerVisionClientSetup::registerCommands);
         TrackedTargetGlowRenderer.register(modEventBus);
         TrackerHudOverlay.register(modEventBus);
+        NearestTargetScanner.register(modEventBus);
     }
 
     private static void registerCommands(final RegisterClientCommandsEvent event) {

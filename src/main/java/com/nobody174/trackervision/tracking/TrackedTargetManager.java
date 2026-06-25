@@ -11,28 +11,53 @@ package com.nobody174.trackervision.tracking;
 import java.util.UUID;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.Enemy;
+
+import com.nobody174.trackervision.config.TrackerVisionConfig;
 
 /**
- * Client-side store for the currently locked target. v0.1 supports a single
- * locked entity; multi-target tracking is planned for a later milestone.
+ * Client-side store for the currently tracked target and its selection
+ * mode. v0.5 supports a single tracked entity at a time, selected either
+ * manually ({@link TrackingMode#LOCKED}, via {@code /track lock}) or
+ * automatically ({@link TrackingMode#NEAREST}, refreshed each tick by
+ * {@code NearestTargetScanner}); multi-target tracking
+ * ({@link TrackingMode#GROUP}/{@code FILTERED}) is v1.0 scope.
  *
- * <p>v0.1 always reports {@link TargetState#TRACKING}; hostility- and
- * range-based state (see {@link TargetState}) is wired up once Tracking
- * Modes (Nearest/Group/Filtered) land per
- * {@code TrackerVision_Production_Design_Package_v2/05_TRACKING_ENGINE.md}.</p>
+ * <p>{@link #computeState(Entity, float)} needs the live entity (for
+ * hostility) and the current distance (for range), so it's computed by
+ * callers that already have that context (HUD/glow layers) rather than
+ * cached here.</p>
  */
 public final class TrackedTargetManager {
     private static UUID lockedTargetId;
+    private static TrackingMode mode = TrackingMode.LOCKED;
 
     private TrackedTargetManager() {
     }
 
     public static void lock(Entity entity) {
         lockedTargetId = entity.getUUID();
+        mode = TrackingMode.LOCKED;
+    }
+
+    /** Called by the Nearest-mode scanner; does not change {@link #mode}. */
+    public static void setAutoSelectedTarget(UUID entityId) {
+        lockedTargetId = entityId;
     }
 
     public static void clear() {
         lockedTargetId = null;
+    }
+
+    public static void setMode(TrackingMode newMode) {
+        mode = newMode;
+        if (newMode == TrackingMode.NEAREST) {
+            lockedTargetId = null;
+        }
+    }
+
+    public static TrackingMode getMode() {
+        return mode;
     }
 
     public static boolean isLocked() {
@@ -43,7 +68,13 @@ public final class TrackedTargetManager {
         return lockedTargetId;
     }
 
-    public static TargetState getCurrentState() {
+    public static TargetState computeState(Entity target, float distance) {
+        if (distance > TrackerVisionConfig.getFarDistance()) {
+            return TargetState.OUT_OF_RANGE;
+        }
+        if (target instanceof Enemy) {
+            return TargetState.HOSTILE_LOCKED;
+        }
         return TargetState.TRACKING;
     }
 }

@@ -3,8 +3,10 @@
 ## v0.5 Beta (in progress)
 - [x] JSON config system (`TrackerVisionConfig`/`TrackerVisionConfigFile`)
       with `/track config` commands
-- [ ] Tracking modes (Nearest auto-select alongside manual Locked)
-- [ ] Hostile/passive target-state color differentiation
+- [x] Tracking modes (`TrackingMode.LOCKED`/`NEAREST`, `/track mode`,
+      `NearestTargetScanner`)
+- [x] Hostile/out-of-range target-state color differentiation
+      (`TrackedTargetManager.computeState`)
 - [ ] Breathing reticle + lock-acquired pulse motion
 - [ ] Through-wall silhouette rendering
 - [ ] In-game config screen (replacing commands per command spec)

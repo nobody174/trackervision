@@ -20,6 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
+import com.nobody174.trackervision.tracking.TrackingMode;
 
 public final class TrackCommand {
     private TrackCommand() {
@@ -34,7 +35,19 @@ public final class TrackCommand {
                 .executes(TrackCommand::clearTarget))
             .then(Commands.literal("status")
                 .executes(TrackCommand::status))
+            .then(Commands.literal("mode")
+                .then(Commands.literal("locked")
+                    .executes(ctx -> setMode(ctx, TrackingMode.LOCKED)))
+                .then(Commands.literal("nearest")
+                    .executes(ctx -> setMode(ctx, TrackingMode.NEAREST))))
             .then(TrackConfigCommand.build()));
+    }
+
+    private static int setMode(CommandContext<CommandSourceStack> ctx, TrackingMode mode) {
+        TrackedTargetManager.setMode(mode);
+        final Component message = Component.literal("TrackerVision mode: " + mode);
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
     }
 
     private static int lockTarget(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {

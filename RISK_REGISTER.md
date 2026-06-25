@@ -12,9 +12,13 @@
 
 ## Risk: Entity scan cost may scale poorly with many tracked/nearby entities
 - Impact: Medium (frame drops in crowded areas)
-- Likelihood: Low at v0.1 scope (single target only)
-- Mitigation: Throttle scans (every N ticks), revisit when Search Mode
-  (v1.0) introduces multi-entity scanning. Target performance budget (per
+- Likelihood: Low at v0.5 scope (`NearestTargetScanner` scans once every 10
+  client ticks, single target selected; not yet stress-tested with 100+
+  nearby entities)
+- Mitigation: Scan throttling implemented (`NearestTargetScanner`, every
+  10 ticks). Revisit when Search Mode (v1.0) introduces multi-entity
+  scanning. Target performance budget (per
   `..._v2/11_PERFORMANCE_BUDGET.md`): <3 FPS average impact while tracking
-  100+ entities, tracking updates per-tick, render updates per-frame.
-- Status: Monitoring
+  100+ entities, tracking updates per-tick, render updates per-frame —
+  not yet profiled against this target.
+- Status: Monitoring (needs profiling pass before v1.0 RC)
