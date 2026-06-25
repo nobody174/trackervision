@@ -1,0 +1,68 @@
+//
+// TrackerVision
+// Author:  nobody174 (nobodylearn174@gmail.com)
+// Repo:    https://github.com/nobody174/trackervision
+// License: All rights reserved © 2025 nobody174
+// "It's never too late to give up!"
+//
+
+package com.nobody174.trackervision.client.command;
+
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+
+import com.nobody174.trackervision.tracking.TrackedTargetManager;
+
+public final class TrackCommand {
+    private TrackCommand() {
+    }
+
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("track")
+            .then(Commands.literal("lock")
+                .then(Commands.argument("target", EntityArgument.entity())
+                    .executes(TrackCommand::lockTarget)))
+            .then(Commands.literal("clear")
+                .executes(TrackCommand::clearTarget))
+            .then(Commands.literal("status")
+                .executes(TrackCommand::status)));
+    }
+
+    private static int lockTarget(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Entity target = EntityArgument.getEntity(ctx, "target");
+        if (!(target instanceof LivingEntity)) {
+            ctx.getSource().sendFailure(Component.literal("TrackerVision can only lock onto living entities."));
+            return 0;
+        }
+        TrackedTargetManager.lock(target);
+        final Component message = Component.literal("Locked target: " + target.getName().getString());
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+
+    private static int clearTarget(CommandContext<CommandSourceStack> ctx) {
+        TrackedTargetManager.clear();
+        final Component message = Component.literal("Target cleared.");
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+
+    private static int status(CommandContext<CommandSourceStack> ctx) {
+        boolean locked = TrackedTargetManager.isLocked();
+        final Component message = Component.literal(locked
+            ? "TrackerVision: tracking target " + TrackedTargetManager.getLockedTargetId()
+            : "TrackerVision: no target locked.");
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+}
+
+//*Built with assistance from __Claude Code__ by Anthropic.*
