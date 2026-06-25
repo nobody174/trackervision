@@ -13,16 +13,21 @@ single locked entity per client; multi-target tracking is a future
 expansion.
 
 ### Visualization Layer (`client/render/`)
-Renders outlines, silhouettes, markers, and beams for tracked targets.
-v0.1 uses the vanilla outline-buffer / post-process pipeline (the same
-mechanism behind spectator glowing) for a crisp, modern 1px rim outline —
-deliberately not the soft additive-bloom look used in armor-aura.
+Applies the vanilla glowing/outline-buffer mechanism (`Entity.setGlowingTag`
++ `OutlineBufferSource`, the same system behind spectator-mode glow) to the
+locked target for a crisp 1px silhouette, tinted by current target state.
+This is supporting cast, not the primary visual identity — see
+`docs/RENDERING_RESEARCH.md` for why a custom-shader approach was
+researched and deliberately deferred to v1.0.
 
 ### HUD Layer (`client/hud/`)
-Renders distance/arrow indicators on `RenderGuiEvent.Post`. Reuses the
-distance-color-coding and ring-indicator concepts proven in boss-radar's
-`HudOverlay`, redesigned for a cleaner, modern look (sharper geometry, no
-chunky vanilla-font defaults).
+This is where TrackerVision's actual visual identity lives: screen-space
+corner-bracket reticle, off-screen direction caret, and distance readout,
+anchored to the target's projected world position on `RenderGuiEvent.Post`.
+Built from scratch against `docs/UI_STYLE_GUIDE.md` (thin geometric
+brackets + depth-based color/alpha falloff, modern tactical-overlay
+language) — not a port of boss-radar's ring-indicator HUD, which doesn't
+match this mod's visual bar.
 
 ### Command Layer (`client/command/`)
 Client-only commands registered via `ClientCommandManager` /
@@ -53,4 +58,6 @@ com.nobody174.trackervision/
 ## Reuse Notes
 
 See `REUSED_FROM.md` for what was adapted from armor-aura and boss-radar,
-and why.
+and why. See `docs/RENDERING_RESEARCH.md` and `docs/UI_STYLE_GUIDE.md` for
+the researched visual-design decisions behind the Visualization and HUD
+layers.

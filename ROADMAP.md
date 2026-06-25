@@ -22,26 +22,28 @@
 - Boss tracking integration
 - Network synchronization across players
 
-## Planning Pack v2 (headline-only, not yet detailed)
-Captured for forward reference; will be fleshed out into full docs when
-TrackerVision approaches v1.0 scope:
-- Executive Vision Document
-- Technical Design Document (TDD)
-- Rendering Architecture
-- Shader Research
-- NeoForge 1.21.1 Hook Analysis
-- Command System Specification
-- Config System Specification
-- Tracking Engine Design
-- HUD System Design
-- Beacon System Design
-- Performance Budget
-- Compatibility Matrix
-- Risk Assessment
-- Milestone Breakdown
-- Folder Structure
-- Coding Standards
-- QA Test Plan
-- Release Checklist
-- Patreon/Marketing Positioning
-- Future Expansion Pack Ideas
+## Planning Pack v2 (headline-level, forward reference)
+
+Source: `TrackerVision_Production_Design_Package_v2/` (20 docs, one
+README). Still headline/bullet-level rather than implementation detail —
+same status as v1 — but confirms direction and adds scope not yet captured
+here. Concrete additions worth carrying forward:
+
+- **Tracking modes** (`05_TRACKING_ENGINE.md`): Nearest / Locked / Group /
+  Filtered — v0.1 implements Locked only; the others are v0.5+/v1.0 scope.
+- **Performance budget** (`11_PERFORMANCE_BUDGET.md`): target <3 FPS
+  average impact while tracking 100+ entities; tracking updates per-tick,
+  render updates per-frame. Informs RISK_REGISTER entry on scan cost.
+- **Compatibility matrix** (`10_COMPATIBILITY_MATRIX.md`): test against
+  Embeddium, Iris, Sodium derivatives, JourneyMap, Xaero — beyond the
+  Iris-only check already in RISK_REGISTER.md.
+- **Coding standards** (`13_CODING_STANDARDS.md`): English-only, Javadocs
+  required, no magic numbers, unit-test where possible.
+- **Release plan** (`16_RELEASE_PLAN.md`): Alpha = commands + outlines,
+  Beta = tracking profiles, RC = optimization, 1.0 = full feature release
+  — consistent with this ROADMAP's v0.1/v0.5/v1.0 split.
+- **Backlog** (`17_BACKLOG.md`): adds minimap integration, sound
+  indicators, AI threat scoring, search vision mode to FUTURE_FEATURES.md.
+
+Will be fleshed out into full implementation docs as TrackerVision
+approaches the milestones each section describes.
