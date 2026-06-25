@@ -66,10 +66,18 @@ that doesn't exist in 1.21.1):
 `TrackerVisionConfigFile` (JSON persistence at
 `config/trackervision/trackervision-config.json`), following the armor-aura
 `AuraConfig`/`AuraConfigFile` pattern. Loaded on `FMLClientSetupEvent`,
-saved immediately on any `/track config` change. An in-game config screen
-(replacing the commands per
-`TrackerVision_Production_Design_Package_v2/08_COMMAND_SPEC.md`) is v0.5+
-scope; commands are the interim v0.1/v0.5 interface.
+saved immediately on any `/track config` change.
+
+`TrackerVisionConfigScreen` (`client/gui/`) is an in-game settings screen
+reachable from the mod list's "Config" button, registered via
+`ModContainer.registerExtensionPoint(IConfigScreenFactory.class, ...)` in
+`TrackerVisionMod`'s constructor. It's built from vanilla `Screen`/
+`GridLayout`/`Checkbox`/`AbstractSliderButton` widgets rather than
+NeoForge's spec-driven `ConfigurationScreen`, since this mod's config is a
+hand-rolled JSON file (`TrackerVisionConfig`/`TrackerVisionConfigFile`),
+not a `ModConfigSpec` — the built-in screen only binds to the latter. The
+`/track config` commands remain available as an alternate interface, not
+replaced by the GUI.
 
 ## Package Layout
 

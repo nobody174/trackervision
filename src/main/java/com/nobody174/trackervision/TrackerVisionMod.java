@@ -15,9 +15,11 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 import com.nobody174.trackervision.client.TrackerVisionClientSetup;
+import com.nobody174.trackervision.client.gui.TrackerVisionConfigScreen;
 import com.nobody174.trackervision.config.TrackerVisionConfigFile;
 
 @Mod(TrackerVisionMod.MOD_ID)
@@ -31,6 +33,8 @@ public class TrackerVisionMod {
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
             TrackerVisionClientSetup.init(modEventBus);
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class,
+                (container, parent) -> new TrackerVisionConfigScreen(parent));
         }
     }
 

@@ -11,7 +11,9 @@
 - [x] Through-wall silhouette rendering (`TrackedTargetGlowRenderer`,
       `Level.clip` occlusion check + depth-test-disabled `POSITION_COLOR`
       pass)
-- [ ] In-game config screen (replacing commands per command spec)
+- [x] In-game config screen (`TrackerVisionConfigScreen`, vanilla widgets,
+      registered via `IConfigScreenFactory`; `/track config` commands kept
+      alongside it, not removed)
 
 ## v0.1 MVP
 - [x] Project scaffold (gradle, mod metadata, package structure)

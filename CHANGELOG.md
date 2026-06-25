@@ -41,3 +41,10 @@
   target's model so the rim accent stays visible through walls instead
   of disappearing entirely — the same `NO_DEPTH_TEST` technique vanilla's
   own spectator-glow outline uses.
+- `TrackerVisionConfigScreen`: in-game settings screen (mod list "Config"
+  button, via `IConfigScreenFactory`) with a tracking-enabled checkbox and
+  near/far distance + bracket size sliders bound directly to
+  `TrackerVisionConfig`, saved on close. Built from vanilla GUI widgets
+  rather than NeoForge's spec-driven `ConfigurationScreen`, since this
+  mod's config is a hand-rolled JSON file, not a `ModConfigSpec`. The
+  `/track config` commands remain available alongside it.
