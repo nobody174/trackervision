@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.HitResult;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -41,13 +42,24 @@ import com.nobody174.trackervision.tracking.TrackedTargetManager;
  * as a sharp accent rather than a glow — the HUD overlay layer carries
  * TrackerVision's actual visual identity (see docs/UI_STYLE_GUIDE.md); this
  * is a subtle supporting cue, not the focal effect.
+ *
+ * <p>When the locked target is behind solid blocks, a second pass draws a
+ * flat, depth-test-disabled silhouette of its model so the rim is still
+ * visible through walls (vanilla's own spectator-glow outline uses the same
+ * {@code NO_DEPTH_TEST} technique). This pass uses
+ * {@link DefaultVertexFormat#POSITION_COLOR} instead of the textured
+ * {@code NEW_ENTITY} format used by the rim above — a flat unlit color
+ * reads as a clean silhouette rather than a textured model bleeding through
+ * geometry. See docs/RENDERING_RESEARCH.md.</p>
  */
 public final class TrackedTargetGlowRenderer {
 
     private static final float RIM_SCALE = 1.035f;
     private static final int RIM_ALPHA = 110;
+    private static final int SILHOUETTE_ALPHA = 70;
 
     private static final Map<ResourceLocation, RenderType> ADDITIVE_RIM_TYPES = new ConcurrentHashMap<>();
+    private static RenderType silhouetteType;
 
     private TrackedTargetGlowRenderer() {
     }
@@ -85,6 +97,34 @@ public final class TrackedTargetGlowRenderer {
         model.renderToBuffer(poseStack, consumer, packedLight, overlay,
             FastColor.ARGB32.color(RIM_ALPHA, red, green, blue));
         poseStack.popPose();
+
+        if (player != null && isOccluded(player, entity)) {
+            VertexConsumer silhouetteConsumer = bufferSource.getBuffer(silhouette());
+            poseStack.pushPose();
+            poseStack.scale(RIM_SCALE, RIM_SCALE, RIM_SCALE);
+            model.renderToBuffer(poseStack, silhouetteConsumer, packedLight, overlay,
+                FastColor.ARGB32.color(SILHOUETTE_ALPHA, red, green, blue));
+            poseStack.popPose();
+        }
+    }
+
+    /**
+     * True if a block occludes the straight line from the player's eyes to
+     * the target's center, meaning the normal depth-tested rim wouldn't be
+     * visible without this silhouette pass.
+     */
+    private static boolean isOccluded(LivingEntity player, LivingEntity target) {
+        if (player.level() == null) {
+            return false;
+        }
+        var eyePos = player.getEyePosition();
+        var targetPos = target.getBoundingBox().getCenter();
+        var hit = player.level().clip(new net.minecraft.world.level.ClipContext(
+            eyePos, targetPos,
+            net.minecraft.world.level.ClipContext.Block.COLLIDER,
+            net.minecraft.world.level.ClipContext.Fluid.NONE,
+            player));
+        return hit.getType() != HitResult.Type.MISS;
     }
 
     private static RenderType additiveRim(ResourceLocation texture) {
@@ -99,6 +139,29 @@ public final class TrackedTargetGlowRenderer {
                 .createCompositeState(true);
             return RenderType.create("trackervision_additive_rim", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, state);
         });
+    }
+
+    /**
+     * Flat, depth-test-disabled silhouette RenderType for the through-wall
+     * pass. Uses {@code POSITION_COLOR} (not the textured entity format)
+     * paired with {@code POSITION_COLOR_SHADER} — the same pairing vanilla
+     * uses for its debug overlays — since the model's
+     * {@code renderToBuffer} call silently drops any vertex element
+     * (UV/overlay/light/normal) the target format doesn't declare.
+     */
+    private static RenderType silhouette() {
+        if (silhouetteType == null) {
+            RenderType.CompositeState state = RenderType.CompositeState.builder()
+                .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
+                .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                .setDepthTestState(RenderStateShard.NO_DEPTH_TEST)
+                .setCullState(RenderStateShard.NO_CULL)
+                .setWriteMaskState(RenderType.COLOR_WRITE)
+                .createCompositeState(false);
+            silhouetteType = RenderType.create("trackervision_silhouette",
+                DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, state);
+        }
+        return silhouetteType;
     }
 }
 

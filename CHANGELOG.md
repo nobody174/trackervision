@@ -34,3 +34,10 @@
 - Reticle motion: a damped-spring scale pulse on target acquisition
   (settles within ~1.5s) and a continuous subtle breathing scale, both
   driven off `System.nanoTime()` per docs/UI_STYLE_GUIDE.md.
+- Through-wall silhouette pass in `TrackedTargetGlowRenderer`: when a
+  block occludes the line from the player's eyes to the locked target
+  (`Level.clip`), a second `RenderType` (depth-test disabled, flat
+  `POSITION_COLOR` format, lower alpha than the normal rim) redraws the
+  target's model so the rim accent stays visible through walls instead
+  of disappearing entirely — the same `NO_DEPTH_TEST` technique vanilla's
+  own spectator-glow outline uses.

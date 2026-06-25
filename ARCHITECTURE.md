@@ -28,6 +28,15 @@ so it can't carry client-only tracking state; see `docs/RENDERING_RESEARCH.md`).
 This is supporting cast, not the primary visual identity — a custom-shader
 outline approach was researched and deliberately deferred to v1.0.
 
+When a block occludes the line from the player's eyes to the target
+(checked via `Level.clip`), a second pass redraws the model with
+depth-testing disabled (`RenderStateShard.NO_DEPTH_TEST`) using a flat
+`DefaultVertexFormat.POSITION_COLOR` RenderType instead of the textured
+rim format, so the rim accent stays visible through walls at a lower
+alpha. This is the same technique vanilla's own spectator-glow outline
+uses; the flat format avoids the full textured model bleeding through
+geometry, which would look messier than a clean silhouette.
+
 ### HUD Layer (`client/hud/`)
 This is where TrackerVision's actual visual identity lives: screen-space
 corner-bracket reticle, off-screen direction caret, and distance readout,

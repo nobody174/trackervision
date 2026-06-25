@@ -8,7 +8,9 @@
 - [x] Hostile/out-of-range target-state color differentiation
       (`TrackedTargetManager.computeState`)
 - [x] Breathing reticle + lock-acquired pulse motion
-- [ ] Through-wall silhouette rendering
+- [x] Through-wall silhouette rendering (`TrackedTargetGlowRenderer`,
+      `Level.clip` occlusion check + depth-test-disabled `POSITION_COLOR`
+      pass)
 - [ ] In-game config screen (replacing commands per command spec)
 
 ## v0.1 MVP
