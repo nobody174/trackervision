@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.0-RC1] - Unreleased
 
 ### Added
 - Project scaffold: Gradle build, NeoForge mod metadata, package structure.

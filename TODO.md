@@ -14,6 +14,10 @@
 - [x] In-game config screen (`TrackerVisionConfigScreen`, vanilla widgets,
       registered via `IConfigScreenFactory`; `/track config` commands kept
       alongside it, not removed)
+- [x] v0.5.0-RC1 tagged — feature-complete, builds clean
+- [ ] Manual in-client test pass (see KNOWN_ISSUES.md) before RC1 can be
+      considered fully validated
+- [ ] RC2 (bug-fix candidate, pending the manual test pass above)
 
 ## v0.1 MVP
 - [x] Project scaffold (gradle, mod metadata, package structure)

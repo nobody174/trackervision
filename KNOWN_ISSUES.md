@@ -1,12 +1,16 @@
 # Known Issues
 
 ## Not yet manually verified in-client
-v0.1's glow renderer and HUD overlay build successfully and the JAR is
-deployed to `working-mods/`, but have not been visually confirmed in a
-running client (reticle placement, off-screen caret behavior, glow
-visibility) — automated tooling in the dev environment can't drive
-Minecraft's native GLFW window. Needs a manual `/track lock <target>` test
-pass before this is considered done per DEFINITION_OF_DONE.
+All of v0.1 and v0.5's rendering/HUD/config-screen features build
+successfully and the JAR is deployed to `working-mods/`, but none have been
+visually confirmed in a running client (reticle placement, off-screen caret
+behavior, glow visibility, through-wall silhouette, config screen layout)
+— automated tooling in the dev environment can't drive Minecraft's native
+GLFW window. Needs a manual test pass (`/track lock <target>`, walking
+behind walls, opening the mod's config screen) before RC1 can be
+considered fully validated per DEFINITION_OF_DONE. Carried over from v0.1
+at the user's explicit choice to skip automated visual verification for
+now; still an open item for any "done" release claim.
 
 ## FOV accuracy in HUD projection
 `ScreenProjection` uses the raw `Minecraft.options.fov()` setting rather
