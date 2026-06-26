@@ -48,6 +48,9 @@ public final class TrackConfigCommand {
             .then(Commands.literal("beaconDistance")
                 .then(Commands.argument("value", FloatArgumentType.floatArg(8.0F, 256.0F))
                     .executes(TrackConfigCommand::setBeaconDistance)))
+            .then(Commands.literal("rimBoostEnabled")
+                .then(Commands.argument("value", BoolArgumentType.bool())
+                    .executes(TrackConfigCommand::setRimBoostEnabled)))
             .then(Commands.literal("show")
                 .executes(TrackConfigCommand::show));
     }
@@ -97,17 +100,27 @@ public final class TrackConfigCommand {
         return 1;
     }
 
+    private static int setRimBoostEnabled(CommandContext<CommandSourceStack> ctx) {
+        boolean value = BoolArgumentType.getBool(ctx, "value");
+        TrackerVisionConfig.setRimBoostEnabled(value);
+        TrackerVisionConfigFile.save();
+        final Component message = Component.literal("Rim boost shader enabled: " + value);
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
+    }
+
     private static int show(CommandContext<CommandSourceStack> ctx) {
         String summary = String.format(
             "TrackerVision config: profile=%s, enabled=%s, nearDistance=%.1f, farDistance=%.1f, bracketSize=%d, "
-                + "beaconEnabled=%s, beaconDistance=%.1f",
+                + "beaconEnabled=%s, beaconDistance=%.1f, rimBoostEnabled=%s",
             TrackerVisionConfig.getActiveProfileName(),
             TrackerVisionConfig.isTrackingEnabled(),
             TrackerVisionConfig.getNearDistance(),
             TrackerVisionConfig.getFarDistance(),
             TrackerVisionConfig.getBracketBaseSize(),
             TrackerVisionConfig.isBeaconEnabled(),
-            TrackerVisionConfig.getBeaconDistance());
+            TrackerVisionConfig.getBeaconDistance(),
+            TrackerVisionConfig.isRimBoostEnabled());
         final Component message = Component.literal(summary);
         ctx.getSource().sendSuccess(() -> message, false);
         return 1;

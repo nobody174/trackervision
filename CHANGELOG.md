@@ -27,6 +27,17 @@
   config screen. `TrackerVisionConfigFile` now persists every profile as
   an array and reads old pre-profiles config files into the seeded
   "Default" profile so upgrading doesn't lose existing settings.
+- `RimBoostEffect`: a real custom core-shader post-process pass
+  (`assets/trackervision/shaders/core/rim_boost.*`, registered via
+  `RegisterShadersEvent`) that brightens only already-bright pixels via a
+  `smoothstep` luminance threshold, giving the locked target's additive
+  rim a soft bloom-like punch. Runs as a manual full-screen quad against a
+  private offscreen target on `RenderLevelStageEvent.AFTER_LEVEL`, only on
+  frames where the rim was actually drawn — deliberately scoped lighter
+  than the full jump-flood/dilation outline rewrite docs/RENDERING_RESEARCH.md
+  originally researched for this milestone, since that was explicitly
+  conditional and carries a flagged Iris-compatibility risk. Toggleable
+  per-profile via `/track config rimBoostEnabled` and the config screen.
 
 ## [0.5.0-RC1] - Unreleased
 

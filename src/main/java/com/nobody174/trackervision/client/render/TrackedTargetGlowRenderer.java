@@ -30,6 +30,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.nobody174.trackervision.config.TrackerVisionConfig;
 import com.nobody174.trackervision.tracking.SearchModeManager;
 import com.nobody174.trackervision.tracking.TargetState;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
@@ -58,6 +59,12 @@ import com.nobody174.trackervision.tracking.TrackedTargetManager;
  * no through-wall silhouette pass) — a lighter treatment than the locked
  * target's, so Search Mode reads as a broad area scan rather than
  * competing visually with an actual lock.</p>
+ *
+ * <p>Whenever the locked target's rim is drawn, {@link RimBoostEffect} is
+ * flagged to run its full-screen post-process pass at the end of the
+ * frame, giving the already-additive rim a soft bloom-like punch — see
+ * {@code RimBoostEffect} for why a manual full-screen quad was used
+ * instead of a full {@code PostChain} JSON pipeline.</p>
  */
 public final class TrackedTargetGlowRenderer {
 
@@ -113,6 +120,9 @@ public final class TrackedTargetGlowRenderer {
             model.renderToBuffer(poseStack, consumer, packedLight, overlay,
                 FastColor.ARGB32.color(RIM_ALPHA, red, green, blue));
             poseStack.popPose();
+            if (TrackerVisionConfig.isRimBoostEnabled()) {
+                RimBoostEffect.markActiveThisFrame();
+            }
 
             if (player != null && isOccluded(player, entity)) {
                 VertexConsumer silhouetteConsumer = bufferSource.getBuffer(silhouette());

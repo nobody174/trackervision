@@ -55,6 +55,24 @@ alpha. This is the same technique vanilla's own spectator-glow outline
 uses; the flat format avoids the full textured model bleeding through
 geometry, which would look messier than a clean silhouette.
 
+`RimBoostEffect` is the v1.0 "shader pipeline" milestone: a real custom
+core `ShaderInstance` (`assets/trackervision/shaders/core/rim_boost.*`,
+registered via `RegisterShadersEvent`) that brightens only already-bright
+pixels (a `smoothstep` luminance threshold in the fragment shader) so the
+additive rim reads with a soft bloom-like punch. Deliberately scoped
+lightweight rather than the full jump-flood/dilation outline rewrite
+docs/RENDERING_RESEARCH.md originally researched for this milestone —
+that full version was explicitly conditional ("only if the team decides
+it's worth the GLSL investment") and carries a flagged Iris-compatibility
+risk; this delivers a genuine shader pipeline without that investment or
+risk. It hooks `RenderLevelStageEvent.Stage.AFTER_LEVEL` and renders a
+manual full-screen quad into a private offscreen `TextureTarget` (sampling
+the main render target, then blitting the boosted result back) rather
+than a full `PostChain` JSON pipeline — cheaper to toggle per-frame, no
+swap-chain bookkeeping, and the pass only runs on frames where
+`TrackedTargetGlowRenderer` actually drew the locked target's rim.
+Toggleable per-profile via `rimBoostEnabled`.
+
 ### HUD Layer (`client/hud/`)
 This is where TrackerVision's actual visual identity lives: screen-space
 corner-bracket reticle, off-screen direction caret, and distance readout,
@@ -91,6 +109,7 @@ that doesn't exist in 1.21.1):
 - `/track profile use <name>`
 - `/track profile create <name>`
 - `/track profile delete <name>`
+- `/track config rimBoostEnabled <true|false>`
 
 ### Configuration Layer (`config/`)
 `TrackerVisionProfile` holds one named bundle of the tunable settings

@@ -31,6 +31,7 @@ public final class TrackerVisionProfile {
     private int trackingAccentColor = 0xFF35E0E0;
     private boolean beaconEnabled = true;
     private float beaconDistance = 48.0F;
+    private boolean rimBoostEnabled = true;
 
     public TrackerVisionProfile(String name) {
         this.name = name;
@@ -98,6 +99,14 @@ public final class TrackerVisionProfile {
 
     public void setBeaconDistance(float value) {
         beaconDistance = Math.max(MIN_FAR_DISTANCE, Math.min(MAX_FAR_DISTANCE, value));
+    }
+
+    public boolean isRimBoostEnabled() {
+        return rimBoostEnabled;
+    }
+
+    public void setRimBoostEnabled(boolean value) {
+        rimBoostEnabled = value;
     }
 }
 

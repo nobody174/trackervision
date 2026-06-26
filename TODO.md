@@ -9,7 +9,10 @@
 - [x] Multiple tracking profiles (`TrackerVisionProfile`, profile-aware
       `TrackerVisionConfig`, `/track profile list|use|create|delete`,
       config screen cycle button, seeded Default/PvP/Exploration profiles)
-- [ ] Shader pipeline for advanced visual effects
+- [x] Shader pipeline for advanced visual effects (`RimBoostEffect`,
+      real custom core `ShaderInstance` post-process bloom-style boost on
+      the locked target's rim, scoped lighter than the full jump-flood
+      outline per the explicit conditional in docs/RENDERING_RESEARCH.md)
 
 ## v0.5 Beta (feature-complete, RC1 tagged)
 - [x] JSON config system (`TrackerVisionConfig`/`TrackerVisionConfigFile`)

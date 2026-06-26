@@ -117,6 +117,9 @@ public final class TrackerVisionConfigFile {
         if (json.has("beaconDistance")) {
             profile.setBeaconDistance(json.get("beaconDistance").getAsFloat());
         }
+        if (json.has("rimBoostEnabled")) {
+            profile.setRimBoostEnabled(json.get("rimBoostEnabled").getAsBoolean());
+        }
     }
 
     public static void save() {
@@ -145,6 +148,7 @@ public final class TrackerVisionConfigFile {
         json.addProperty("trackingAccentColor", String.format("%06X", profile.getTrackingAccentColor() & 0x00FFFFFF));
         json.addProperty("beaconEnabled", profile.isBeaconEnabled());
         json.addProperty("beaconDistance", profile.getBeaconDistance());
+        json.addProperty("rimBoostEnabled", profile.isRimBoostEnabled());
         return json;
     }
 

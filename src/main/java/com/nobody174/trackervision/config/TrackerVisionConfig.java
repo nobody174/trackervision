@@ -95,6 +95,7 @@ public final class TrackerVisionConfig {
         copy.setTrackingAccentColor(active.getTrackingAccentColor());
         copy.setBeaconEnabled(active.isBeaconEnabled());
         copy.setBeaconDistance(active.getBeaconDistance());
+        copy.setRimBoostEnabled(active.isRimBoostEnabled());
         profiles.put(name, copy);
         return true;
     }
@@ -179,6 +180,15 @@ public final class TrackerVisionConfig {
 
     public static void setBeaconDistance(float value) {
         getActiveProfile().setBeaconDistance(value);
+    }
+
+    /** Whether {@code RimBoostEffect}'s post-process bloom-style boost runs while the locked target's rim is drawn. */
+    public static boolean isRimBoostEnabled() {
+        return getActiveProfile().isRimBoostEnabled();
+    }
+
+    public static void setRimBoostEnabled(boolean value) {
+        getActiveProfile().setRimBoostEnabled(value);
     }
 }
 

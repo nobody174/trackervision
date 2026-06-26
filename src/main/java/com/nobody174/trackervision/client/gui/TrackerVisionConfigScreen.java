@@ -84,6 +84,12 @@ public final class TrackerVisionConfigScreen extends Screen {
             "Beacon distance", TrackerVisionConfig.getBeaconDistance(), 8.0F, 256.0F,
             TrackerVisionConfig::setBeaconDistance));
 
+        rows.addChild(
+            Checkbox.builder(Component.literal("Rim boost shader (bloom-style punch on lock)"), font)
+                .selected(TrackerVisionConfig.isRimBoostEnabled())
+                .onValueChange((checkbox, value) -> TrackerVisionConfig.setRimBoostEnabled(value))
+                .build());
+
         grid.arrangeElements();
         grid.visitWidgets(this::addRenderableWidget);
         grid.setPosition((width - grid.getWidth()) / 2, 40);

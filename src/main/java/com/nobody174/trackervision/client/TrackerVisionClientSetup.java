@@ -14,6 +14,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import com.nobody174.trackervision.client.command.TrackCommand;
 import com.nobody174.trackervision.client.hud.TrackerHudOverlay;
+import com.nobody174.trackervision.client.render.RimBoostEffect;
 import com.nobody174.trackervision.client.render.TrackedTargetGlowRenderer;
 import com.nobody174.trackervision.tracking.NearestTargetScanner;
 import com.nobody174.trackervision.tracking.SearchModeScanner;
@@ -28,6 +29,7 @@ public final class TrackerVisionClientSetup {
         TrackerHudOverlay.register(modEventBus);
         NearestTargetScanner.register(modEventBus);
         SearchModeScanner.register(modEventBus);
+        RimBoostEffect.register(modEventBus);
     }
 
     private static void registerCommands(final RegisterClientCommandsEvent event) {
