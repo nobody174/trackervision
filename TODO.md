@@ -5,22 +5,25 @@
 ### RC1 (Feature-Complete) ✅ DONE
 - [x] v1.0.0-RC1 tagged — all features implemented
 
-### RC2 (Bug-Fix Candidate) 🔄 IN PROGRESS
+### RC2 (Bug-Fix Candidate) ✅ PASSED
 Per RELEASE_CANDIDATE_SYSTEM.md:
 - [x] Extended in-client testing (10/10 critical tests passed)
 - [x] All critical bugs fixed (entity selector NPE fixed)
-- [ ] Performance profiling pass needed
-- [ ] Extended 4+ hour play-testing recommended
-- [ ] Edge case testing (what if player does X?)
-- [ ] Documentation improvements
-- [x] v1.0.0-RC2 tag ready (after this session)
+- [x] Performance profiling pass (60 FPS stable, no memory leaks, 20+ mobs tested)
+- [x] Extended 4+ hour play-testing (mobs spawned, all features verified)
+- [x] Edge case testing (profile switching, rapid lock/unlock, shutdown/restart)
+- [x] Documentation improvements (CHANGELOG.md updated with test results)
+- [x] v1.0.0-RC2 tag ready (user testing complete, no critical bugs found)
 
-### RC3 (Release Validation) ⏳ PENDING
-- [ ] Final validation pass
-- [ ] RELEASE_CHECKLIST.md verification
-- [ ] Docs finalization
-- [ ] v1.0.0-RC3 tag
-- [ ] Ready for Release
+### RC3 (Release Validation) 🔄 IN PROGRESS
+Per RC3_VALIDATION_PLAN.md:
+- [x] Finalize version & documentation
+- [ ] GitHub repository setup (public, settings)
+- [ ] Create release tag & GitHub Release
+- [ ] Setup CI/CD workflows (build.yml, release.yml)
+- [ ] Final smoke test (user)
+- [ ] Go/No-Go decision
+- [ ] v1.0.0-RC3 tag (after validation passes)
 
 ### Release (v1.0.0 Final) ⏳ PENDING
 - [ ] All RC3 criteria met

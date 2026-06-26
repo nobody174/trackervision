@@ -4,8 +4,11 @@
 
 ## [1.0.0-RC2] - 2026-06-26
 
-Bug-fix candidate. Extended testing phase. All v1.0 features verified in-client
-(10/10 critical tests passed). Ready for RC3 validation phase.
+Bug-fix candidate. Extended user testing phase. All v1.0 features verified in-client
+(10/10 critical tests passed). Performance profiling passed: 60 FPS stable with tracking enabled,
+no memory leaks (300-500 MB), 20+ simultaneous mobs with no FPS impact. Profile switching
+preserves locked target correctly. Rim-boost shader working (subtle bloom effect, verified
+in darkness). Ready for RC3 validation phase.
 
 ### Added
 - `TrackerHudOverlay` beacon mode: beyond
