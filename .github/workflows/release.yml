@@ -1,10 +1,9 @@
-name: Build
+name: Release Build
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -26,9 +25,13 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
+      - name: Get JAR filename
+        id: jar
+        run: echo "file=$(ls build/libs/trackervision-*.jar | head -1)" >> $GITHUB_OUTPUT
+
+      - name: Upload to GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: trackervision-jar
-          path: build/libs/trackervision-*.jar
-          retention-days: 30
+          files: ${{ steps.jar.outputs.file }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
