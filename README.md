@@ -116,6 +116,21 @@ Download the latest JAR from [Releases](https://github.com/nobody174/trackervisi
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for system design and [ROADMAP.md](ROADMAP.md) for future plans.
 
+## Roadmap
+
+### v1.0.1 (coming soon)
+- Entity-type filtering for auto-select (`/track type friendly|hostile|players|zombie|skeleton|...`)
+- Performance optimizations
+- Bug fixes from v1.0.0 testing
+
+### Future (v2.0+)
+- Team systems (shared tracking across party members)
+- Boss tracking integration with other mods
+- Minimap integration (JourneyMap/Xaero sync)
+- Sound indicators (audio cues on lock/proximity)
+
+See [FUTURE_FEATURES.md](FUTURE_FEATURES.md) for the full backlog.
+
 ## Known Limitations
 
 - **Not yet Iris-compatible** — custom shader has not been tested against shader packs (Iris, etc.)
