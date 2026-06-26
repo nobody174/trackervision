@@ -51,8 +51,8 @@ public final class TrackerHudOverlay {
     private static final int TEXT_COLOR_NEUTRAL = 0xFFE8EEF2;
     private static final int TEXT_OUTLINE = 0xC0000000;
 
-    private static final int BEACON_HEIGHT = 40;
-    private static final int BEACON_STROKE = 2;
+    private static final int BEACON_HEIGHT = 300;
+    private static final int BEACON_STROKE = 3;
 
     private TrackerHudOverlay() {
     }
@@ -148,15 +148,14 @@ public final class TrackerHudOverlay {
     }
 
     /**
-     * Vertical accent pillar for far-away targets (beyond
-     * {@code TrackerVisionConfig.getBeaconDistance()}), per
-     * docs/UI_STYLE_GUIDE.md's "Beacon Pillar Marker": a thin line from the
-     * target's screen-space base extending upward, fading top-to-bottom
-     * (brightest near the target, so it still reads as anchored to them),
-     * capped with a small chevron. Replaces the bracket reticle at this
-     * range since a heavily shrunk-down bracket is hard to spot — the
-     * beacon's whole purpose is locating targets the reticle can't
-     * usefully represent anymore.
+     * Sky-to-target beacon for far-away targets (beyond
+     * {@code TrackerVisionConfig.getBeaconDistance()}): a tall vertical accent
+     * pillar extending from high on-screen down to the target's position,
+     * with a gradient fade (brightest near the target, fading to near-invisible
+     * at the top so it reads as anchored). Capped with a small chevron at the
+     * target's feet. Replaces the bracket reticle at range since a heavily
+     * shrunk bracket is hard to spot — the beacon's whole purpose is making
+     * distant targets visible from anywhere on-screen.
      */
     private static void drawBeacon(GuiGraphics graphics, float baseX, float baseY, int accentColor, float alpha) {
         int half = BEACON_STROKE / 2;
