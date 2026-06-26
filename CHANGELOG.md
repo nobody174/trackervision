@@ -17,6 +17,16 @@
   target's, no through-wall silhouette pass) — distinct from
   `TrackingMode.NEAREST`, which auto-selects a single best target. Search
   Mode doesn't touch the locked target; both can be active at once.
+- Multiple tracking profiles (`TrackerVisionProfile`, reworked
+  `TrackerVisionConfig` as a profile-aware facade): named, switchable
+  bundles of near/far distance, bracket size, accent color, and beacon
+  settings, so switching activities doesn't require re-tuning every
+  setting by hand. Seeded with "Default", "PvP" (tighter, short-range,
+  no beacon), and "Exploration" (longer-range, beacon on) profiles.
+  `/track profile list|use|create|delete`, plus a cycle button in the
+  config screen. `TrackerVisionConfigFile` now persists every profile as
+  an array and reads old pre-profiles config files into the seeded
+  "Default" profile so upgrading doesn't lose existing settings.
 
 ## [0.5.0-RC1] - Unreleased
 

@@ -87,13 +87,30 @@ that doesn't exist in 1.21.1):
 - `/track config nearDistance <value>`
 - `/track config farDistance <value>`
 - `/track config show`
+- `/track profile list`
+- `/track profile use <name>`
+- `/track profile create <name>`
+- `/track profile delete <name>`
 
 ### Configuration Layer (`config/`)
-`TrackerVisionConfig` (in-memory, clamped on write) +
-`TrackerVisionConfigFile` (JSON persistence at
-`config/trackervision/trackervision-config.json`), following the armor-aura
-`AuraConfig`/`AuraConfigFile` pattern. Loaded on `FMLClientSetupEvent`,
-saved immediately on any `/track config` change.
+`TrackerVisionProfile` holds one named bundle of the tunable settings
+(near/far distance, bracket size, accent color, beacon enabled/distance),
+clamped on every setter. `TrackerVisionConfig` holds every registered
+profile plus which one is active, and exposes the active profile's
+settings through the same static getter/setter surface every other layer
+already calls — adding profiles didn't require touching the HUD, render,
+or command call sites, only how a setting resolves underneath them.
+Three profiles are seeded by default ("Default", a tighter short-range
+"PvP", and a longer-range "Exploration"); players can also create/delete
+their own via `/track profile create|delete` or the config screen's cycle
+button. `TrackerVisionConfigFile` (JSON persistence at
+`config/trackervision/trackervision-config.json`) serializes every
+profile as an array plus the active profile name, following the
+armor-aura `AuraConfig`/`AuraConfigFile` pattern otherwise. It also reads
+the pre-profiles flat-key layout from older config files, applying it to
+the seeded "Default" profile so upgrading doesn't discard existing
+settings. Loaded on `FMLClientSetupEvent`, saved immediately on any
+`/track config` or `/track profile` change.
 
 `TrackerVisionConfigScreen` (`client/gui/`) is an in-game settings screen
 reachable from the mod list's "Config" button, registered via

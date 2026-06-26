@@ -10,11 +10,14 @@ package com.nobody174.trackervision.client.gui;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+
+import java.util.List;
 
 import com.nobody174.trackervision.config.TrackerVisionConfig;
 import com.nobody174.trackervision.config.TrackerVisionConfigFile;
@@ -46,6 +49,12 @@ public final class TrackerVisionConfigScreen extends Screen {
     protected void init() {
         GridLayout grid = new GridLayout().columnSpacing(8).rowSpacing(8);
         GridLayout.RowHelper rows = grid.createRowHelper(1);
+
+        rows.addChild(Button.builder(
+                Component.literal("Profile: " + TrackerVisionConfig.getActiveProfileName() + " (click to cycle)"),
+                button -> cycleProfile())
+            .size(WIDGET_WIDTH, ROW_HEIGHT)
+            .build());
 
         rows.addChild(
             Checkbox.builder(Component.literal("Tracking enabled"), font)
@@ -84,6 +93,16 @@ public final class TrackerVisionConfigScreen extends Screen {
                 button -> onClose())
             .bounds((width - 150) / 2, height - 32, 150, 20)
             .build());
+    }
+
+    /** Switches to the next profile in registration order and rebuilds the widgets to reflect its settings. */
+    private void cycleProfile() {
+        List<String> names = TrackerVisionConfig.getProfileNames();
+        int currentIndex = names.indexOf(TrackerVisionConfig.getActiveProfileName());
+        String next = names.get((currentIndex + 1) % names.size());
+        TrackerVisionConfig.setActiveProfile(next);
+        clearWidgets();
+        init();
     }
 
     @Override

@@ -99,8 +99,9 @@ public final class TrackConfigCommand {
 
     private static int show(CommandContext<CommandSourceStack> ctx) {
         String summary = String.format(
-            "TrackerVision config: enabled=%s, nearDistance=%.1f, farDistance=%.1f, bracketSize=%d, "
+            "TrackerVision config: profile=%s, enabled=%s, nearDistance=%.1f, farDistance=%.1f, bracketSize=%d, "
                 + "beaconEnabled=%s, beaconDistance=%.1f",
+            TrackerVisionConfig.getActiveProfileName(),
             TrackerVisionConfig.isTrackingEnabled(),
             TrackerVisionConfig.getNearDistance(),
             TrackerVisionConfig.getFarDistance(),

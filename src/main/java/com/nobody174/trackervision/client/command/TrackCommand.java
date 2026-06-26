@@ -45,7 +45,8 @@ public final class TrackCommand {
             .then(Commands.literal("search")
                 .then(Commands.argument("value", BoolArgumentType.bool())
                     .executes(TrackCommand::setSearchMode)))
-            .then(TrackConfigCommand.build()));
+            .then(TrackConfigCommand.build())
+            .then(TrackProfileCommand.build()));
     }
 
     private static int setSearchMode(CommandContext<CommandSourceStack> ctx) {

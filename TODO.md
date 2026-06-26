@@ -6,7 +6,9 @@
 - [x] Search mode (`SearchModeManager`/`SearchModeScanner`,
       `/track search <true|false>`, persistent multi-target reveal
       independent of the locked target)
-- [ ] Multiple tracking profiles
+- [x] Multiple tracking profiles (`TrackerVisionProfile`, profile-aware
+      `TrackerVisionConfig`, `/track profile list|use|create|delete`,
+      config screen cycle button, seeded Default/PvP/Exploration profiles)
 - [ ] Shader pipeline for advanced visual effects
 
 ## v0.5 Beta (feature-complete, RC1 tagged)
