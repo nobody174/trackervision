@@ -1,6 +1,6 @@
 # TODO
 
-## v1.0 Release (in progress)
+## v1.0 Release (feature-complete, RC1 tagged)
 - [x] Beacon mode (`TrackerHudOverlay.drawBeacon`, vertical accent pillar
       replacing the bracket reticle beyond `beaconDistance`)
 - [x] Search mode (`SearchModeManager`/`SearchModeScanner`,
@@ -13,6 +13,15 @@
       real custom core `ShaderInstance` post-process bloom-style boost on
       the locked target's rim, scoped lighter than the full jump-flood
       outline per the explicit conditional in docs/RENDERING_RESEARCH.md)
+- [x] v1.0.0-RC1 tagged — feature-complete, builds clean, all roadmap
+      milestones (v0.1/v0.5/v1.0) implemented
+- [ ] Manual in-client test pass (see KNOWN_ISSUES.md) before RC1 can be
+      considered fully validated — covers every feature across all three
+      milestones, not just v1.0's
+- [ ] Entity-scan performance profiling against the <3 FPS/100-entity
+      budget (see RISK_REGISTER.md), now that Search Mode's multi-entity
+      scan exists
+- [ ] RC2 (bug-fix candidate, pending the manual test pass above)
 
 ## v0.5 Beta (feature-complete, RC1 tagged)
 - [x] JSON config system (`TrackerVisionConfig`/`TrackerVisionConfigFile`)

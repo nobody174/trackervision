@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.0.0-RC1] - Unreleased
+
 ### Added
 - `TrackerHudOverlay` beacon mode: beyond
   `TrackerVisionConfig.getBeaconDistance()`, the bracket reticle is
