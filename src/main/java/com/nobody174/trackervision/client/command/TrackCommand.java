@@ -13,6 +13,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -67,6 +68,11 @@ public final class TrackCommand {
     }
 
     private static int lockTarget(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.player == null || mc.level == null) {
+            ctx.getSource().sendFailure(Component.literal("Not in a world."));
+            return 0;
+        }
         Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "target");
         if (targets.isEmpty()) {
             ctx.getSource().sendFailure(Component.literal("No entities matched."));
