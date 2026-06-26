@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-## [1.0.0] - 2026-06-26
+## [1.0.0-RC2] - 2026-06-26
+
+Bug-fix candidate. Extended testing phase. All v1.0 features verified in-client
+(10/10 critical tests passed). Ready for RC3 validation phase.
 
 ### Added
 - `TrackerHudOverlay` beacon mode: beyond

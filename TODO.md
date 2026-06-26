@@ -1,6 +1,34 @@
 # TODO
 
-## v1.0 Release (feature-complete, tested, released)
+## v1.0 Release Candidate Progression
+
+### RC1 (Feature-Complete) ✅ DONE
+- [x] v1.0.0-RC1 tagged — all features implemented
+
+### RC2 (Bug-Fix Candidate) 🔄 IN PROGRESS
+Per RELEASE_CANDIDATE_SYSTEM.md:
+- [x] Extended in-client testing (10/10 critical tests passed)
+- [x] All critical bugs fixed (entity selector NPE fixed)
+- [ ] Performance profiling pass needed
+- [ ] Extended 4+ hour play-testing recommended
+- [ ] Edge case testing (what if player does X?)
+- [ ] Documentation improvements
+- [x] v1.0.0-RC2 tag ready (after this session)
+
+### RC3 (Release Validation) ⏳ PENDING
+- [ ] Final validation pass
+- [ ] RELEASE_CHECKLIST.md verification
+- [ ] Docs finalization
+- [ ] v1.0.0-RC3 tag
+- [ ] Ready for Release
+
+### Release (v1.0.0 Final) ⏳ PENDING
+- [ ] All RC3 criteria met
+- [ ] v1.0.0 release tag
+- [ ] Public release
+- [ ] CI/CD setup
+
+## v1.0 Features (All Implemented & Tested)
 - [x] Beacon mode (sky-to-target beam, 300px tall, visible at distance)
 - [x] Search mode (persistent multi-entity reveal toggle)
 - [x] Multiple tracking profiles (Default/PvP/Exploration)

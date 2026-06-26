@@ -6,7 +6,7 @@ TrackerVision replaces vanilla glowing with a flexible, customizable tracking sy
 
 ## Status
 
-**v1.0.0 Released** — Feature-complete and tested. Ready for production.
+**v1.0.0-RC2** — Bug-fix candidate. All v1.0 features implemented and verified in-client (10/10 critical tests passed). Ready for RC3 validation phase and final release.
 
 ## Features
 
