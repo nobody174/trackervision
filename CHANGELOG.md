@@ -10,6 +10,13 @@
   alpha-gradient line capped with a chevron, since a heavily
   distance-shrunk bracket becomes hard to spot at range. Toggleable via
   `/track config beaconEnabled|beaconDistance` and the config screen.
+- Search Mode (`SearchModeManager`/`SearchModeScanner`,
+  `/track search <true|false>`): a persistent, independent toggle that
+  reveals every valid living entity within `farDistance` of the player
+  with a light additive rim (neutral color, lower alpha than the locked
+  target's, no through-wall silhouette pass) — distinct from
+  `TrackingMode.NEAREST`, which auto-selects a single best target. Search
+  Mode doesn't touch the locked target; both can be active at once.
 
 ## [0.5.0-RC1] - Unreleased
 

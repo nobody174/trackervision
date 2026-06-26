@@ -16,6 +16,7 @@ import com.nobody174.trackervision.client.command.TrackCommand;
 import com.nobody174.trackervision.client.hud.TrackerHudOverlay;
 import com.nobody174.trackervision.client.render.TrackedTargetGlowRenderer;
 import com.nobody174.trackervision.tracking.NearestTargetScanner;
+import com.nobody174.trackervision.tracking.SearchModeScanner;
 
 public final class TrackerVisionClientSetup {
     private TrackerVisionClientSetup() {
@@ -26,6 +27,7 @@ public final class TrackerVisionClientSetup {
         TrackedTargetGlowRenderer.register(modEventBus);
         TrackerHudOverlay.register(modEventBus);
         NearestTargetScanner.register(modEventBus);
+        SearchModeScanner.register(modEventBus);
     }
 
     private static void registerCommands(final RegisterClientCommandsEvent event) {

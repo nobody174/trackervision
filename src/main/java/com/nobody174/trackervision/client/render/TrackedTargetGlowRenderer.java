@@ -30,6 +30,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.nobody174.trackervision.tracking.SearchModeManager;
 import com.nobody174.trackervision.tracking.TargetState;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
 
@@ -51,12 +52,20 @@ import com.nobody174.trackervision.tracking.TrackedTargetManager;
  * {@code NEW_ENTITY} format used by the rim above — a flat unlit color
  * reads as a clean silhouette rather than a textured model bleeding through
  * geometry. See docs/RENDERING_RESEARCH.md.</p>
+ *
+ * <p>While {@link SearchModeManager} is enabled, every entity in its
+ * revealed set also gets the additive rim (neutral color, lower alpha,
+ * no through-wall silhouette pass) — a lighter treatment than the locked
+ * target's, so Search Mode reads as a broad area scan rather than
+ * competing visually with an actual lock.</p>
  */
 public final class TrackedTargetGlowRenderer {
 
     private static final float RIM_SCALE = 1.035f;
     private static final int RIM_ALPHA = 110;
     private static final int SILHOUETTE_ALPHA = 70;
+    private static final int SEARCH_RIM_ALPHA = 70;
+    private static final int SEARCH_REVEAL_COLOR = 0xFFE8EEF2;
 
     private static final Map<ResourceLocation, RenderType> ADDITIVE_RIM_TYPES = new ConcurrentHashMap<>();
     private static RenderType silhouetteType;
@@ -71,39 +80,57 @@ public final class TrackedTargetGlowRenderer {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static void onRenderLivingPost(RenderLivingEvent.Post event) {
         LivingEntity entity = event.getEntity();
-        if (entity.isInvisible() || !entity.getUUID().equals(TrackedTargetManager.getLockedTargetId())) {
+        if (entity.isInvisible()) {
+            return;
+        }
+
+        boolean isLocked = entity.getUUID().equals(TrackedTargetManager.getLockedTargetId());
+        boolean isSearchRevealed = !isLocked && SearchModeManager.isEnabled()
+            && SearchModeManager.getRevealedTargets().contains(entity.getUUID());
+        if (!isLocked && !isSearchRevealed) {
             return;
         }
 
         var player = Minecraft.getInstance().player;
-        float distance = player != null ? (float) player.position().distanceTo(entity.position()) : 0.0F;
-        TargetState state = TrackedTargetManager.computeState(entity, distance);
-        int rgb = state.colorRgb();
-        int red = (rgb >> 16) & 0xFF;
-        int green = (rgb >> 8) & 0xFF;
-        int blue = rgb & 0xFF;
-
         LivingEntityRenderer renderer = event.getRenderer();
         EntityModel model = renderer.getModel();
         PoseStack poseStack = event.getPoseStack();
         MultiBufferSource bufferSource = event.getMultiBufferSource();
         int packedLight = event.getPackedLight();
-
         VertexConsumer consumer = bufferSource.getBuffer(additiveRim(renderer.getTextureLocation(entity)));
         int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
 
-        poseStack.pushPose();
-        poseStack.scale(RIM_SCALE, RIM_SCALE, RIM_SCALE);
-        model.renderToBuffer(poseStack, consumer, packedLight, overlay,
-            FastColor.ARGB32.color(RIM_ALPHA, red, green, blue));
-        poseStack.popPose();
+        if (isLocked) {
+            float distance = player != null ? (float) player.position().distanceTo(entity.position()) : 0.0F;
+            TargetState state = TrackedTargetManager.computeState(entity, distance);
+            int rgb = state.colorRgb();
+            int red = (rgb >> 16) & 0xFF;
+            int green = (rgb >> 8) & 0xFF;
+            int blue = rgb & 0xFF;
 
-        if (player != null && isOccluded(player, entity)) {
-            VertexConsumer silhouetteConsumer = bufferSource.getBuffer(silhouette());
             poseStack.pushPose();
             poseStack.scale(RIM_SCALE, RIM_SCALE, RIM_SCALE);
-            model.renderToBuffer(poseStack, silhouetteConsumer, packedLight, overlay,
-                FastColor.ARGB32.color(SILHOUETTE_ALPHA, red, green, blue));
+            model.renderToBuffer(poseStack, consumer, packedLight, overlay,
+                FastColor.ARGB32.color(RIM_ALPHA, red, green, blue));
+            poseStack.popPose();
+
+            if (player != null && isOccluded(player, entity)) {
+                VertexConsumer silhouetteConsumer = bufferSource.getBuffer(silhouette());
+                poseStack.pushPose();
+                poseStack.scale(RIM_SCALE, RIM_SCALE, RIM_SCALE);
+                model.renderToBuffer(poseStack, silhouetteConsumer, packedLight, overlay,
+                    FastColor.ARGB32.color(SILHOUETTE_ALPHA, red, green, blue));
+                poseStack.popPose();
+            }
+        } else {
+            int red = (SEARCH_REVEAL_COLOR >> 16) & 0xFF;
+            int green = (SEARCH_REVEAL_COLOR >> 8) & 0xFF;
+            int blue = SEARCH_REVEAL_COLOR & 0xFF;
+
+            poseStack.pushPose();
+            poseStack.scale(RIM_SCALE, RIM_SCALE, RIM_SCALE);
+            model.renderToBuffer(poseStack, consumer, packedLight, overlay,
+                FastColor.ARGB32.color(SEARCH_RIM_ALPHA, red, green, blue));
             poseStack.popPose();
         }
     }

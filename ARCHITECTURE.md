@@ -8,7 +8,10 @@
 the configured far-distance radius (`level.getEntitiesOfClass` + an AABB,
 the same pattern boss-radar uses, but client-tick-driven rather than a
 server-side item tick, since this state never needs to leave the client).
-Area scan/reveal (Search Mode) is v1.0 scope.
+
+`SearchModeScanner` runs the same scan pattern but collects every valid
+entity in range instead of just the closest one, feeding
+`SearchModeManager`'s revealed-target set.
 
 ### Tracking Layer (`tracking/`)
 `TrackedTargetManager` stores the currently tracked target and its
@@ -17,7 +20,16 @@ selected by the Detection Layer above). `TargetState` (tracking/hostile/
 out-of-range) is computed per-frame from the live entity + distance via
 `computeState(Entity, float)`, not cached, since it depends on context
 only the HUD/glow layers have at render time. v0.5 supports a single
-tracked entity at a time; `GROUP`/`FILTERED` modes are v1.0 scope.
+tracked entity at a time; `FILTERED` mode remains future scope.
+
+`SearchModeManager` is a separate, independent on/off toggle
+(`/track search <true|false>`) holding a set of revealed entity UUIDs —
+the multi-target "area scan/reveal" case the v2 planning pack's Tracking
+Engine doc originally filed under a future `GROUP` mode. It's deliberately
+decoupled from `TrackedTargetManager` rather than folded into
+`TrackingMode`, since Search Mode reveals many entities at once and
+doesn't interact with which single entity (if any) is locked — both can
+be active simultaneously without conflict.
 
 ### Visualization Layer (`client/render/`)
 `TrackedTargetGlowRenderer` draws a thin single-pass additive rim on the
@@ -27,6 +39,12 @@ was investigated but rejected: it's server-synced and gets overwritten,
 so it can't carry client-only tracking state; see `docs/RENDERING_RESEARCH.md`).
 This is supporting cast, not the primary visual identity — a custom-shader
 outline approach was researched and deliberately deferred to v1.0.
+
+The same renderer also draws a lighter version of the rim (neutral color,
+lower alpha, no through-wall silhouette pass) on every entity in
+`SearchModeManager`'s revealed set when Search Mode is on, so a broad
+area scan reads as visually distinct from — and doesn't compete with —
+an actual locked target.
 
 When a block occludes the line from the player's eyes to the target
 (checked via `Level.clip`), a second pass redraws the model with

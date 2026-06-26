@@ -9,6 +9,7 @@
 package com.nobody174.trackervision.client.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
@@ -19,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+import com.nobody174.trackervision.tracking.SearchModeManager;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
 import com.nobody174.trackervision.tracking.TrackingMode;
 
@@ -40,7 +42,18 @@ public final class TrackCommand {
                     .executes(ctx -> setMode(ctx, TrackingMode.LOCKED)))
                 .then(Commands.literal("nearest")
                     .executes(ctx -> setMode(ctx, TrackingMode.NEAREST))))
+            .then(Commands.literal("search")
+                .then(Commands.argument("value", BoolArgumentType.bool())
+                    .executes(TrackCommand::setSearchMode)))
             .then(TrackConfigCommand.build()));
+    }
+
+    private static int setSearchMode(CommandContext<CommandSourceStack> ctx) {
+        boolean value = BoolArgumentType.getBool(ctx, "value");
+        SearchModeManager.setEnabled(value);
+        final Component message = Component.literal("TrackerVision search mode: " + value);
+        ctx.getSource().sendSuccess(() -> message, false);
+        return 1;
     }
 
     private static int setMode(CommandContext<CommandSourceStack> ctx, TrackingMode mode) {

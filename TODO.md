@@ -3,7 +3,9 @@
 ## v1.0 Release (in progress)
 - [x] Beacon mode (`TrackerHudOverlay.drawBeacon`, vertical accent pillar
       replacing the bracket reticle beyond `beaconDistance`)
-- [ ] Search mode (area scan/reveal)
+- [x] Search mode (`SearchModeManager`/`SearchModeScanner`,
+      `/track search <true|false>`, persistent multi-target reveal
+      independent of the locked target)
 - [ ] Multiple tracking profiles
 - [ ] Shader pipeline for advanced visual effects
 
