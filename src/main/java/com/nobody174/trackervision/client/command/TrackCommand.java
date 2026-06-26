@@ -20,6 +20,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.Collection;
+
 import com.nobody174.trackervision.tracking.SearchModeManager;
 import com.nobody174.trackervision.tracking.TrackedTargetManager;
 import com.nobody174.trackervision.tracking.TrackingMode;
@@ -31,7 +33,7 @@ public final class TrackCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("track")
             .then(Commands.literal("lock")
-                .then(Commands.argument("target", EntityArgument.entity())
+                .then(Commands.argument("target", EntityArgument.entities())
                     .executes(TrackCommand::lockTarget)))
             .then(Commands.literal("clear")
                 .executes(TrackCommand::clearTarget))
@@ -65,7 +67,12 @@ public final class TrackCommand {
     }
 
     private static int lockTarget(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
-        Entity target = EntityArgument.getEntity(ctx, "target");
+        Collection<? extends Entity> targets = EntityArgument.getEntities(ctx, "target");
+        if (targets.isEmpty()) {
+            ctx.getSource().sendFailure(Component.literal("No entities matched."));
+            return 0;
+        }
+        Entity target = targets.iterator().next();
         if (!(target instanceof LivingEntity)) {
             ctx.getSource().sendFailure(Component.literal("TrackerVision can only lock onto living entities."));
             return 0;
